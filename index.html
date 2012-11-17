@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Backbone.js • Monster Catalog</title>
+  <link rel="stylesheet" href="assets/css/bootstrap.css"> 
+  <style>
+    body {
+      padding-top: 90px;
+    }
+    .monster-details {
+      padding: 15px;
+      -moz-border-radius: 5px;
+      -webkit-border-radius: 5px;
+      border-radius: 5px;
+      -khtml-border-radius: 5px;
+    }
+    .monster-details:hover {
+      border: 1px solid #DDD;
+      background: #EEE;
+      -moz-box-shadow:    3px 3px 5px 1px #CCC;
+      -webkit-box-shadow: 3px 3px 5px 1px #CCC;
+      box-shadow:         3px 3px 5px 1px #CCC;
+    }
+    .monster-details .btn-group {
+      opacity: 0;
+    }
+    .monster-details:hover .btn-group {
+      opacity: 1;
+    }
+    .monster-details h4 {
+      display: inline-block;
+    }
+    .navbar-form {
+      margin: 8px 0;
+    }
+  </style>
+</head>
+<body>
+  <section id="monsterapp">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Monster Catalog</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li><a href="#" id="addMonster">Add Monster</a></li>
+              <li><a href="#" id="deleteAll">Delete All</a></li>
+              <li><a href="#" id="resetApp">Reset App</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+          <form class="navbar-form form-search pull-right">
+            <div class="input-append">
+               <input type="text" id="searchbox" class="span2 search-query">
+               <button type="submit" class="btn">Search</button>
+             </div>
+           </form>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <h1>Monsters are appearing everywhere</h1>
+      <p>Please do your part to keep these monsters under surveilance.</p>
+      <div id="monster-list"></div>
+    </div>
+  </section>
+  
+  <script type="text/template" id="monster-template">
+    <section class="monster-details container">
+      <div class="row">
+        <div class="span12">
+          <h4><strong><a href="#"><%- name %></a></strong></h4>
+          <div class="btn-group pull-right">
+            <a href="#edit/<%= cid %>" class="edit btn"><i class="icon-edit"></i></a>
+            <a href="#" class="delete btn"><i class="icon-trash"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span2">
+          <a href="#" class="thumbnail">
+              <img src="assets/img/thumbnails/<%- thumbnail %>" alt="">
+          </a>
+        </div>
+        <div class="span10">      
+          <p>
+          <%- description %>
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="span12 pull-right">
+          <p></p>
+          <p>
+            <i class="icon-user"></i> by <a href="#"><%- author %></a> 
+            | <i class="icon-calendar"></i> <%- date %>
+            <% if(tags.length !== 0){ %>
+              | <i class="icon-tags"></i> Tags : 
+              <% _.each(tags, function(i) { %>  <a href="#filter/<%= i %>"><span class="label label-info"><%= i %></span></a> <% }); %>
+            <% } %>
+          </p>
+        </div>
+      </div>
+    </section>
+  </script>
+  
+  <script type="text/template" id="monster-edit-template">
+  	<div id="modalDetails" class="modal hide fade">
+  	  <div class="modal-header">
+  	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+  	    <h3>Modal header</h3>
+  	  </div>
+  	  <div class="modal-body">
+    		<form class="form-horizontal">
+          <div class="control-group">
+            <label class="control-label" for="name">Name</label>
+            <div class="controls">
+              <input type="text" id="name" name="name" value="<%- name %>">
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="author">Author</label>
+            <div class="controls">
+              <input type="text" id="author" name="author" value="<%- author %>">
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="tags">Tags</label>
+            <div class="controls">
+              <input type="text" id="tags" name="tags" value="<%- tags.join(', ') %>">
+              <span class="help-block">Tags must be comma seperated.</span>
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="thumbnail">Thumbnail</label>
+            <div class="controls">
+      				<select name="thumbnail">
+                <option><%= thumbnail %></option>
+      					<option>monster001_trans.png</option>
+      					<option>monster003_trans.png</option>
+      					<option>monster004_trans.png</option>
+      					<option>monster005_trans.png</option>
+      					<option>monster006_trans.png</option>
+      					<option>monster007_trans.png</option>
+      					<option>monster008_trans.png</option>
+      					<option>monster010_trans.png</option>
+      					<option>monster011_trans.png</option>
+      					<option>monster012_trans.png</option>
+      					<option>monster013_trans.png</option>
+      					<option>monster014_trans.png</option>
+      					<option>monster015_trans.png</option>
+      					<option>monster016_trans.png</option>
+      					<option>monster017_trans.png</option>
+      					<option>monster018_trans.png</option>
+      					<option>monster019_trans.png</option>
+      					<option>monster020_trans.png</option>
+      				</select>
+            </div>
+          </div>
+          <div class="control-group">
+            <label class="control-label" for="description">Description</label>
+            <div class="controls">
+              <textarea name="description" rows="3"><%- description %></textarea>
+            </div>
+          </div>
+    		</form>
+  	  </div>
+  	  <div class="modal-footer">
+    	    <a href="#" class="save btn btn-primary">Save changes</a>
+      </div>
+  	</div>
+  </script>
+
+  
+  <script src="assets/js/lib/jquery.js"></script>
+  <script src="assets/js/lib/underscore.js"></script>
+  <script src="assets/js/lib/backbone.js"></script>
+  <script src="assets/js/lib/backbone.localStorage.js"></script>
+  <script src="assets/js/lib/bootstrap-modal.js"></script>
+  <script src="assets/js/models/monster.js"></script>
+  <script src="assets/js/collections/monsters.js"></script>
+  <script src="assets/js/views/app.js"></script>
+  <script src="assets/js/views/monsters.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/routers/router.js"></script>
+</body>
+</html>
